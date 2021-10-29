@@ -1,4 +1,5 @@
 import docker
+from datetime import datetime
 
 d = docker.DockerClient(base_url='unix://var/run/docker.sock')
 
@@ -45,4 +46,25 @@ def backupMount(source, destination):
     except Exception as exception:
         print(exception)
         print("Failed to run rclone container!")
+        exit(1)
+
+def archiveBackup(backuplocation, destination, containername):
+    archivename=containername + "-" + datetime.today().strftime('%Y-%m-%d-%H%M%S')
+    print("Archiving " + backuplocation + " to " + destination + "/"+ archivename)
+    volumeconfig={
+        backuplocation: {'bind': "/"+containername, 'mode': 'ro'},
+        destination: {'bind': '/destination', 'mode': 'rw'}
+        }
+    try:
+        compresscontainer = d.containers.run(
+        "alpine:3",  
+        "tar cvzf /destination/"+ archivename +".tar.gz /"+containername,
+        volumes=volumeconfig,
+        name='compressor',
+        remove=True,
+        )
+        print(compresscontainer)
+    except Exception as exception:
+        print(exception)
+        print("Failed to run compression container!")
         exit(1)
