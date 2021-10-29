@@ -39,7 +39,7 @@ def backupMount(source, destination):
         "rclone/rclone",  
         "copy -P /source /destination",
         volumes=volumeconfig,
-        name='rclone',
+        name='mountnsync-rclone',
         remove=True,
         )
         print(backupcontainer)
@@ -60,7 +60,7 @@ def archiveBackup(backuplocation, destination, containername):
         "alpine:3",  
         "tar cvzf /destination/"+ archivename +".tar.gz /"+containername,
         volumes=volumeconfig,
-        name='compressor',
+        name='mountnsync-compressor',
         remove=True,
         )
         print(compresscontainer)
