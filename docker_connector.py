@@ -28,11 +28,12 @@ def containerCtl(c_id, action):
         exit(1)
 
 
-def backupMount(source, destination):
-    print("Backing up " + source + " To " + destination)
+def makeBackup(hostSource, hostDestination, containerSource, containername):
+    hostBackupDestination=hostDestination+"/"+containername+containerSource
+    print("Backing up " + hostSource + " To " + hostBackupDestination +"/..")
     volumeconfig={
-        source: {'bind': '/source', 'mode': 'ro'},
-        destination: {'bind': '/destination', 'mode': 'rw'}
+        hostSource: {'bind': '/source', 'mode': 'ro'},
+        hostBackupDestination: {'bind': '/destination', 'mode': 'rw'}
         }
     try:
         backupcontainer = d.containers.run(
@@ -48,12 +49,12 @@ def backupMount(source, destination):
         print("Failed to run rclone container!")
         exit(1)
 
-def archiveBackup(backuplocation, destination, containername):
+def archiveBackup(hostBackupPath, hostDestination, containername):
     archivename=containername + "-" + datetime.today().strftime('%Y-%m-%d-%H%M%S')
-    print("Archiving " + backuplocation + " to " + destination + "/"+ archivename)
+    print("Archiving " + hostBackupPath + " to " + hostDestination + "/"+ archivename)
     volumeconfig={
-        backuplocation: {'bind': "/"+containername, 'mode': 'ro'},
-        destination: {'bind': '/destination', 'mode': 'rw'}
+        hostBackupPath: {'bind': "/"+containername, 'mode': 'rw'},
+        hostDestination: {'bind': '/destination', 'mode': 'rw'}
         }
     try:
         compresscontainer = d.containers.run(

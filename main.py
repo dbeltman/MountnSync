@@ -30,10 +30,11 @@ elif args.backup:
         if args.backup == 'all':
             mounts = docker_connector.getContainerMounts(args.container)
             for mount in mounts:
-                docker_connector.backupMount(mount['Source'], args.destination)
+                docker_connector.makeBackup(mount['Source'], args.destination, mount['Destination'], args.container)
         docker_connector.containerCtl(args.container, "start")
         if args.archive == True:
-            docker_connector.archiveBackup(args.destination+"/"+args.container, args.destination, args.container)
+            backuplocation=args.destination+"/"+args.container
+            docker_connector.archiveBackup(backuplocation, args.destination, args.container)
         else:
             print("Not archiving backup..")
 
