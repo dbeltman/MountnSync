@@ -24,7 +24,7 @@ docker run \
     dockerdaan/mountnsync:latest \
     main.py --backup all --destination /your/backup/location <containername>
 ```
-> This will create a backup of all <containername> mounts in /your/backup/location/<containername>/mounts/{<mount1>,<mount2>,etc..}
+> This will create a backup of all $containername mounts in /your/backup/location/$containername/mounts/{$mount1,$mount2,etc..}
 
 ##### Creating a backup and archiving it
 ```
@@ -34,4 +34,4 @@ docker run \
     dockerdaan/mountnsync:latest \
     main.py --backup all --destination --archive /your/backup/location <containername>
 ```
-> The --archive flag will create an archive of the latest backup in /your/backup/location/<containername>/archives/<containername><timestamp>.tar.gz
+> The --archive flag will create an archive of the latest backup in /your/backup/location/$containername/archives/$containername$timestamp.tar.gz
