@@ -29,7 +29,7 @@ def containerCtl(c_id, action):
 
 
 def makeBackup(hostSource, hostDestination, containerSource, containername):
-    hostBackupDestination=hostDestination+"/"+containername+containerSource
+    hostBackupDestination=hostDestination+"/"+containername+"/mounts"+containerSource
     print("Backing up " + hostSource + " To " + hostBackupDestination +"/..")
     volumeconfig={
         hostSource: {'bind': '/source', 'mode': 'ro'},
@@ -49,17 +49,19 @@ def makeBackup(hostSource, hostDestination, containerSource, containername):
         print("Failed to run rclone container!")
         exit(1)
 
-def archiveBackup(hostBackupPath, hostDestination, containername):
+def archiveBackup(hostBackupPath, containername):
+    containerBackupSource="/"+containername+"/mounts"
+    hostArchiveDestination = hostBackupPath + "/" + containername + "/archives"
     archivename=containername + "-" + datetime.today().strftime('%Y-%m-%d-%H%M%S')
-    print("Archiving " + hostBackupPath + " to " + hostDestination + "/"+ archivename)
+    print("Archiving "+hostBackupPath+"/"+containername+" to "+hostArchiveDestination+"/"+archivename+".tar.gz")
     volumeconfig={
-        hostBackupPath: {'bind': "/"+containername, 'mode': 'rw'},
-        hostDestination: {'bind': '/destination', 'mode': 'rw'}
+        hostBackupPath: {'bind': containerBackupSource, 'mode': 'rw'},
+        hostArchiveDestination: {'bind': '/destination', 'mode': 'rw'}
         }
     try:
         compresscontainer = d.containers.run(
         "alpine:3",  
-        "tar cvzf /destination/"+ archivename +".tar.gz /"+containername,
+        "tar -cvzf /destination/"+archivename+".tar.gz "+containerBackupSource,
         volumes=volumeconfig,
         name='mountnsync-compressor',
         remove=True,

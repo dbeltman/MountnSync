@@ -33,8 +33,7 @@ elif args.backup:
                 docker_connector.makeBackup(mount['Source'], args.destination, mount['Destination'], args.container)
         docker_connector.containerCtl(args.container, "start")
         if args.archive == True:
-            backuplocation=args.destination+"/"+args.container
-            docker_connector.archiveBackup(backuplocation, args.destination, args.container)
+            docker_connector.archiveBackup(args.destination, args.container)
         else:
             print("Not archiving backup..")
 
