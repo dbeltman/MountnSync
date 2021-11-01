@@ -49,19 +49,17 @@ def makeBackup(hostSource, hostDestination, containerSource, containername):
         print("Failed to run rclone container!")
         exit(1)
 
-def archiveBackup(hostBackupPath, containername):
-    containerBackupSource="/"+containername+"/mounts"
-    hostArchiveDestination = hostBackupPath + "/" + containername + "/archives"
-    archivename=containername + "-" + datetime.today().strftime('%Y-%m-%d-%H%M%S')
-    print("Archiving "+hostBackupPath+"/"+containername+" to "+hostArchiveDestination+"/"+archivename+".tar.gz")
+def archiveBackup(containername, backuppath, archivepath):
+    archivename=containername+"-"+datetime.today().strftime('%Y-%m-%d-%H%M%S')+".tar.gz"
+    print("Archiving "+backuppath+" to "+archivepath+"/"+archivename+".tar.gz")
     volumeconfig={
-        hostBackupPath: {'bind': containerBackupSource, 'mode': 'rw'},
-        hostArchiveDestination: {'bind': '/destination', 'mode': 'rw'}
+        backuppath: {'bind': "/data", 'mode': 'rw'},
+        archivepath: {'bind': '/destination', 'mode': 'rw'}
         }
     try:
         compresscontainer = d.containers.run(
         "alpine:3",  
-        "tar -cvzf /destination/"+archivename+".tar.gz "+containerBackupSource,
+        "tar -cvzf /destination/"+archivename+" /data",
         volumes=volumeconfig,
         name='mountnsync-compressor',
         remove=True,
