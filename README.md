@@ -5,6 +5,7 @@ Docker container (bind-) mount discovery and backup tool
 
 - Discover bind mounts attached to a specified container
 - Back up these bind mounts to a destination of your choosing
+- Gracefully shuts down the container before backing up, and starts it up again after backing up
 - (Optionally) Archive the backup so it is stored in a timestamped .tar.gz file for easy organising
 
 ### How does it do that?
@@ -22,7 +23,7 @@ docker run \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --name mountnsync \
     dockerdaan/mountnsync:latest \
-    main.py --backup all --destination /your/backup/location <containername>
+    --backup all --destination /your/backup/location <containername>
 ```
 > This will create a backup of all $containername mounts in /your/backup/location/$containername/mounts/{$mount1,$mount2,etc..}
 
@@ -32,6 +33,6 @@ docker run \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --name mountnsync \
     dockerdaan/mountnsync:latest \
-    main.py --backup all --destination --archive /your/backup/location <containername>
+    --backup all --destination --archive /your/backup/location <containername>
 ```
 > The --archive flag will create an archive of the latest backup in /your/backup/location/$containername/archives/$containername$timestamp.tar.gz
