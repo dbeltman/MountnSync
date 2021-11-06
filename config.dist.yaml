@@ -1,4 +1,4 @@
-# homeassistant, or the containername used in your environment
+# homeassistant, or the containername used in your environment ( case sensitive! )
 homeassistant:
   ignoredmounts:
     - /some/mount/to/ignore 
