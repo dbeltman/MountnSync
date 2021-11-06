@@ -3,10 +3,11 @@ Docker container (bind-) mount discovery and backup tool
 
 ### What does this do?
 
-- Discover bind mounts attached to a specified container
+- Discover bind mounts attached to a specified container or service
 - Back up these bind mounts to a destination of your choosing
-- Gracefully shuts down the container before backing up, and starts it up again after backing up
+- Gracefully shuts down the container/service before backing up, and starts it up again after backing up
 - (Optionally) Archive the backup so it is stored in a timestamped .tar.gz file for easy organising
+- Allows for exluding mounts via config.yaml
 
 ### How does it do that?
 
@@ -18,7 +19,8 @@ Docker container (bind-) mount discovery and backup tool
 ### How do i use it?
 
 ##### (Optional) creating a config file
-There is a config.dist.yaml file that serves as an example of what the config can do.
+There is a `config.dist.yaml` file included that serves as an example of what the config can do. Copy it to `config.yaml` and mount it accordingly to enable it.
+
 By default `--backup all` will scan for all mounts and back them up. You can ignore certain mounts, so they wont be backed up. 
 For example:
  - Plex media library
@@ -43,5 +45,16 @@ docker run \
     --name mountnsync \
     dockerdaan/mountnsync:latest \
     --backup all --type container --destination --archive /your/backup/location <containername>
+```
+> The --archive flag will create an archive of the latest backup in /your/backup/location/$containername/archives/$containername$timestamp.tar.gz
+
+##### Creating a backup of a service, using config.yaml
+```
+docker run \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v /your/config.yaml:/app/config.yaml \
+    --name mountnsync \
+    dockerdaan/mountnsync:latest \
+    --backup all --type service --destination --archive /your/backup/location <servicename>_<taskname>
 ```
 > The --archive flag will create an archive of the latest backup in /your/backup/location/$containername/archives/$containername$timestamp.tar.gz
