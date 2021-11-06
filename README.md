@@ -17,13 +17,22 @@ Docker container (bind-) mount discovery and backup tool
 
 ### How do i use it?
 
+##### (Optional) creating a config file
+There is a config.dist.yaml file that serves as an example of what the config can do.
+By default `--backup all` will scan for all mounts and back them up. You can ignore certain mounts, so they wont be backed up. 
+For example:
+ - Plex media library
+ - Some app that has a (large) database you dont necessarily need
+TODO: Exlude certain folders/files in mount using the rclone exclude command. For now this supports only whole mounts.
+Large files along config files in the same mount will require you to separate those files/folders into further container mounts
+
 ##### Creating a simple folder backup
 ```
 docker run \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --name mountnsync \
     dockerdaan/mountnsync:latest \
-    --backup all --destination /your/backup/location <containername>
+    --backup all --type container --destination /your/backup/location <containername>
 ```
 > This will create a backup of all $containername mounts in /your/backup/location/$containername/mounts/{$mount1,$mount2,etc..}
 
@@ -33,6 +42,6 @@ docker run \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --name mountnsync \
     dockerdaan/mountnsync:latest \
-    --backup all --destination --archive /your/backup/location <containername>
+    --backup all --type container --destination --archive /your/backup/location <containername>
 ```
 > The --archive flag will create an archive of the latest backup in /your/backup/location/$containername/archives/$containername$timestamp.tar.gz
