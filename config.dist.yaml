@@ -1,0 +1,12 @@
+# homeassistant, or the containername used in your environment
+homeassistant:
+  ignoredmounts:
+    - /some/mount/to/ignore 
+
+plex:
+  ignoredmounts:
+    - /your/media/library
+
+some-app-with-non-critical-database:
+  ignoredmounts:
+    - /var/lib/mysql/data
