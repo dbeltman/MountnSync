@@ -7,9 +7,14 @@ import json
 
 d = docker.DockerClient(base_url='unix://var/run/docker.sock')
 
+
 # Read YAML file
-with open("config.yaml", 'r') as stream:
-    config = yaml.safe_load(stream)
+try:      
+    with open("config.yaml", 'r') as stream:
+        config = yaml.safe_load(stream)
+        print("Found config! Applying settings")
+except:
+    print("No (valid) config supplied, continuing without customization/configuration")
 
 def listservices():
     list = d.services.list()
