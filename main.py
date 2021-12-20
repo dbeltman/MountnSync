@@ -17,6 +17,8 @@ parser.add_argument("-s", "--scale", type=str, help = "Scale Service")
 # Flags
 parser.add_argument("-a", "--archive", action='store_true', help="Archive the backup location afterwards. /destination/<containername>/all/your/data will be stored in /destination/<containername><todaysdate>.tar.gz")
 parser.add_argument("-sd", "--servicedetails", action='store_true', help="Show service details of the given container")
+
+# Parse Args
 args= parser.parse_args()
 
 # Timeout in seconds to wait for the container/service to stop running
